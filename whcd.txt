@@ -1,0 +1,365 @@
+
+首先：1.我们进入到通过cmd打开控制台，进入cmd定位到.android文件夹下
+输入keytool -list -v -keystore debug.keystore得到三种指纹证书，选取SHA1类型的证书，密匙口令是android，就可以获取到MD5和SHA1（注意如果不输入-v的话就只会出现SHA1的值）
+
+-----------------------------------------------------------------
+
+android 抓取log 的方法：
+unix-like 系统：
+adb shell logcat -v time thread | tee ~/log.log
+win 系统：
+adb shell logcat -v time thread > log.log
+命令敲上之后，进行复现，复现完成之后，停止命令，然后把对应的 log.log 发过来。
+
+control + c
+
+--------------------------------------------------------------------
+时间比较
+	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+								Date nowDate = dateFormat.parse(TimeUtils.getNowTimeString("yyyy-MM-dd"));
+								//选择时间大于今天 返回-1 等于0 小于1
+								if (nowDate.compareTo(date)>0) {
+									showToast("请选择正确的生日");
+									return;
+								}
+
+
+--------------------------------------------------------------------
+
+点击波浪
+?android:selectableItemBackground
+android:foreground="?android:selectableItemBackground"
+圆形波浪
+?android:selectableItemBackgroundBorderless
+
+--------------------------------------------------------------------
+
+Android沉浸式状态栏实现
+https://segmentfault.com/a/1190000008325936
+
+--------------------------------------------------------------------
+
+/**
+     * [绑定控件]
+     *
+     * @param resId
+     *
+     * @return
+     */
+    protected    <T extends View> T $(int resId) {
+        return (T) super.findViewById(resId);
+    }
+
+--------------------------------------------------------------------
+屏蔽错误//加多宝项目
+Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
+
+-----------------------------------------------------------------------------------
+滑动的波浪设置为没有
+
+overscrollMode="Never"
+
+---------------------------------------------------------------------------------------------
+给文字设置颜色
+tv_song_name.setTextColor(context.getResources().getColor(R.color.colorWrite));
+
+---------------------------------------------------------------------------------------------
+
+慕课网
+379760818
+zx379760818+zxczxc
+
+
+---------------------------------------------------------------------------------------------
+
+gradle配置apk的名字
+
+   //apk名字
+    android.applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                //这里修改apk文件名
+                def fileName = outputFile.name.replace("app","${defaultConfig.applicationId }_${defaultConfig.versionName}_${releaseTime() }")
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
+    }
+
+先在android { ...}节点外面加上下面的函数 作用是返回时间
+def releaseTime() {
+    return new Date().format("yyyyMMdd", TimeZone.getTimeZone("UTC"))
+}
+
+-----------------------------------------------------------------------------------------------
+
+ release {
+            minifyEnabled true // 代码压缩， 代码压缩会拖慢构建速度，因此您应该尽可能避免在调试构建中使用。
+            shrinkResources true // 资源压缩，用于移除无用的资源，要在minifyEnabled的后面执行
+            // 原因：为您可能需要编辑 proguard-rules.pro 文件以保留动态创建或调用的类或方法，然后再开始移除资源。
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                   'proguard-rules.pro'
+        }
+
+----------------------------------------------------------------------------------------------------------
+
+    通过图片名字找到图片的id
+    int resID = getResources().getIdentifier("p0_1a", "mipmap", AppUtils.getAppPackageName());
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+插件：
+    http://www.jianshu.com/p/269a48d7508d
+    Android Studio插件整理
+    http://www.jianshu.com/p/c76b0d8a642d
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+判断intent里面是否有这个parms参数的值
+getIntent().hasExtra("params")
+
+-------------------------------------------------------------------------------
+dialog的Activity
+
+    <style name="dialogStyle" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowFullscreen">false</item>
+
+        <!--设置dialog的背景-->
+        <item name="android:windowBackground">@drawable/bg_wanfashuoming</item>
+        <!--设置Dialog的windowFrame框为无-->
+        <item name="android:windowFrame">@null</item>
+        <!--设置无标题-->
+        <item name="windowNoTitle">true</item>
+        <!--是否浮现在activity之上-->
+        <item name="android:windowIsFloating">true</item>
+        <!--是否半透明-->
+        <item name="android:windowIsTranslucent">true</item>
+        <!--设置窗口内容不覆盖-->
+        <item name="android:windowContentOverlay">@null</item>
+        <!--设置动画，在这里使用让它继承系统的Animation.Dialog-->
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <!--背景是否模糊显示-->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!--设置窗体外部touch不能取消-->
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+
+
+    ---------------------------------------------------------------------------------------------------
+
+    
+如果将so文件添加在module的libs文件夹下，注意在module的gradle配置中添加一下配置：
+
+sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+
+
+    ---------------------------------------------------------------------------------------------------
+dialog设置宽度
+
+WindowManager m = getWindowManager();
+        Display d = m.getDefaultDisplay(); // 为获取屏幕宽、高
+        WindowManager.LayoutParams p = getWindow().getAttributes(); // 获取对话框当前的参值
+        p.height = (int) (d.getHeight() * 1.0); // 高度设置为屏幕的1.0
+        p.width = (int) (d.getWidth() * 0.67); // 宽度设置为屏幕的0.8
+        getWindow().setAttributes(p); // 设置生效
+        getWindow().setGravity(Gravity.RIGHT); // 设置靠右对齐
+
+
+--------------------------------------------------------------------------------------------------
+
+  /**
+     * 华为 隐藏虚拟按键，并且全屏
+     */
+    protected void hideBottomUIMenu() {
+        //隐藏虚拟按键，并且全屏
+        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
+            View v = this.getWindow().getDecorView();
+            v.setSystemUiVisibility(View.GONE);
+        } else if (Build.VERSION.SDK_INT >= 19) {
+            //for new api versions.
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
+    }
+
+
+
+
+
+--------------------------------------------------------------------------------------------------
+照相
+（推荐）7.0之后你的app就算有权限，给出一个URI之后手机也认为你没有权限。
+不用修改原有代码，在Application的oncreate方法中：
+
+
+if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+    StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+    StrictMode.setVmPolicy(builder.build());
+}
+
+
+
+--------------------------------------------------------------------------------------------------
+
+
+
+
+//Android Studio编译项目的时候报Manifest merger failed
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'com.android.support') {
+            if (!requested.name.startsWith("multidex")) {
+                details.useVersion '25.3.1'//默认使用的版本
+            }
+        }
+    }
+}
+--------------------------------------------------------------------------------------------------
+时间渲染
+彩票app
+DateUtil.formatCurrentDateSeach(DateUtil.YYYY_MM_DD_HH_MM_SS, System.currentTimeMillis())
+
+
+--------------------------------------------------------------------------------------------------
+
+软键盘隐藏
+https://www.cnblogs.com/ldq2016/p/6861128.html
+
+
+InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
+imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);  
+
+
+
+
+--------------------------------------------------------------------------------------------------
+
+
+    /*
+	  * 将秒数转为分秒
+	  * */
+    private String timeParse(long duration) {
+        String time = "" ;
+        long minute = duration / 60 ;
+        long seconds = duration % 60 ;
+        long second = Math.round((float)seconds) ;
+        if( minute < 10 ){
+            time += "0" ;
+        }
+        time += minute+":" ;
+        if( second < 10 ){
+            time += "0" ;
+        }
+        time += second ;
+        return time ;
+    }
+
+    /*
+	   * 将秒数转为时分秒
+	   * */
+    public String change(int second) {
+        int h = 0;
+        int d = 0;
+        int s = 0;
+        int temp = second % 3600;
+        if (second > 3600) {
+            h = second / 3600;
+            if (temp != 0) {
+                if (temp > 60) {
+                    d = temp / 60;
+                    if (temp % 60 != 0) {
+                        s = temp % 60;
+                    }
+                } else {
+                    s = temp;
+                }
+            }
+        } else {
+            d = second / 60;
+            if (second % 60 != 0) {
+                s = second % 60;
+            }
+        }
+
+        return h + ":" + d + ":" + s + "";
+    }
+
+---------------------------------------------------------------
+
+
+//获取详细电量信息 返回电量|是否充电中
+    public String notifyBattery(int level, int scale, int status) {
+        String batteryStatue = "";
+        int per = scale / 5;
+        if (level <= per) {
+            //Log.v(TAG, "手机电量低于1/5");
+            batteryStatue += "0.2|";
+        } else if (level > per && level <= per * 2) {
+            //Log.v(TAG, "手机电量低于2/5");
+            batteryStatue += "0.4|";
+        } else if (level > 2 * per && level <= per * 3) {
+            //Log.v(TAG, "手机电量低于3/5");
+            batteryStatue += "0.6|";
+        } else if (level > 3 * per && level <= per * 4) {
+            //Log.v(TAG, "手机电量低于4/5");
+            batteryStatue += "0.8|";
+        } else {
+            //Log.v(TAG, "手机电量充足");
+            batteryStatue += "1|";
+        }
+        if (status == BatteryManager.BATTERY_STATUS_CHARGING)//充电标记2
+        {
+            //Log.v(TAG,"充电中，电量背景为animation");
+            batteryStatue += "2";
+            //UnityCallAndroidToast("电池充电中...");
+        } else {
+            /*if(status == BatteryManager.BATTERY_STATUS_FULL)//5
+            {
+                Log.v(TAG, "满电量");
+                CreateToast("电池电量充足");
+            }
+            else if(status == BatteryManager.BATTERY_STATUS_NOT_CHARGING)//4
+            {
+                Log.v(TAG,"未充电");
+            }
+            else if(status == BatteryManager.BATTERY_STATUS_DISCHARGING)//3
+            {
+                Log.v(TAG,"放电中");
+                CreateToast("电池放电中");
+            }
+            if(status == BatteryManager.BATTERY_STATUS_UNKNOWN)//1
+            {
+                Log.v(TAG,"状态未知");
+            }*/
+            batteryStatue += "0";
+        }
+        //CreateToast(batteryStatue);
+        //电量信息格式:剩余百分比|是否充电中
+        return batteryStatue;
+    }
+
+
+
+---------------------------------------------------------------
+
+
+http://x5.tencent.com/tbs/index.html
+
+
+
+
+---------------------------------------------------------------
+
+
+
+
